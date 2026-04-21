@@ -40,9 +40,7 @@ resource "aws_instance" "olympic_games_app_server" {
 resource "aws_security_group" "olympic_games_app_security_group" {
   name = "allow-ssh"
   ingress {
-    cidr_blocks = [
-      "${var.my_pc_public_ip}/32"
-    ]
+    cidr_blocks = var.authorized_public_ips_for_ssh
     from_port = 22
     to_port   = 22
     protocol  = "tcp"

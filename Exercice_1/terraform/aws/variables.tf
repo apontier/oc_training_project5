@@ -1,8 +1,8 @@
-variable "my_pc_public_ip" {
+variable "authorized_public_ips_for_ssh" {
   description = "Public IP address of the machine from which you will connect to the AWS instance. This variable is used to restrict SSH access to the instance to only your machine."
-  type        = string
+  type        = list(string)
   sensitive = true
-  default     = ""
+  default     = []
 }
 
 variable "generated_key_name" {
