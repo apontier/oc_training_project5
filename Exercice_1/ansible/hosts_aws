@@ -1,0 +1,2 @@
+[all]
+<addresse_ip_instance_aws> ansible_ssh_user=ubuntu

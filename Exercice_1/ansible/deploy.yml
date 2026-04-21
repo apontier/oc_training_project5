@@ -1,0 +1,13 @@
+---
+- name: Openclassrooms P5 EDO deployment
+  hosts: all
+
+  tasks:
+    # Implémenter ici les tâches:
+    # - d'installation de Nginx;
+    # - d'installation de l'application Angular (voir répertoire ./app);
+    # - de configuration du serveur Nginx pour servir l'application Angular
+
+  handlers:
+    # Implémenter ici le handler redémarrant automatiquement le serveur Nginx lorsque le playbook
+    # opère une modification de la configuration du serveur.
