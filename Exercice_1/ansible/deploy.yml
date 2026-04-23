@@ -1,7 +1,6 @@
 ---
 - name: "Openclassrooms P5 EDO deployment - Deploy the Olympic Games application"
   hosts: Olympic_Games_App_Server
-  become: true
   roles:
     - role: nginx
     - role: web_olympic_games

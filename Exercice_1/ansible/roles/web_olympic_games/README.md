@@ -11,6 +11,11 @@ The vars used by this role are :
 - web_olympic_games_app_group : the group of the web app files (default : www-data)
 - web_olympic_games_app_name : the name of the web app (default : olympic-games-starter)
 
+Dependencies
+------------
+
+This role needs to be associated with the role nginx for the reload notified to the deployment of the web app files.
+
 Example Playbook
 ----------------
 
@@ -18,6 +23,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
+         - role: nginx
          - role: web_olympic_games
 
 License
