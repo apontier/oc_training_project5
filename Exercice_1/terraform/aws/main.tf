@@ -28,7 +28,7 @@ resource "aws_instance" "olympic_games_app_server" {
 
   # Optionnel - Définition des éléments permettant une connexion SSH
   # sur la machine déployée
-  vpc_security_group_ids = ["${aws_security_group.olympic_games_app_security_group.id}"]
+  vpc_security_group_ids = ["${aws_security_group.olympic_games_app_security_group_ssh.id}", "${aws_security_group.olympic_games_app_security_group_http.id}"]
   key_name               = aws_key_pair.generated_key.key_name
 }
 
@@ -37,12 +37,28 @@ resource "aws_instance" "olympic_games_app_server" {
 // Cette section n'est pas demandée pour ce premier exercice car
 // un peu technique mais sera nécessaire pour la seconde partie.
 
-resource "aws_security_group" "olympic_games_app_security_group" {
+resource "aws_security_group" "olympic_games_app_security_group_ssh" {
   name = "allow-ssh"
   ingress {
     cidr_blocks = var.authorized_public_ips_for_ssh
     from_port = 22
     to_port   = 22
+    protocol  = "tcp"
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "olympic_games_app_security_group_http" {
+  name = "allow-http"
+  ingress {
+    cidr_blocks = var.authorized_public_ips_for_http
+    from_port = 80
+    to_port   = 80
     protocol  = "tcp"
   }
   egress {

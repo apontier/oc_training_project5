@@ -5,6 +5,13 @@ variable "authorized_public_ips_for_ssh" {
   default     = []
 }
 
+variable "authorized_public_ips_for_http" {
+  description = "Public IP address of the machine from which you will connect to the AWS instance. This variable is used to restrict HTTP access to the instance to only your machine."
+  type        = list(string)
+  sensitive = true
+  default     = []
+}
+
 variable "generated_key_name" {
   type        = string
   default     = "openclassrooms_edo_p5"

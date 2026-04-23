@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT-0
+---
+# defaults file for nginx
+nginx_listen_port: 80
