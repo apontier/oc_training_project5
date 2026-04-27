@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MIT-0
+---
+# handlers file for nginx
+- name: "Reload Nginx"
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+  listen: "reload nginx"
