@@ -58,17 +58,13 @@ resource "aws_instance" "haproxy" {
 resource "aws_security_group" "my_security_group" {
   name = "OpenClassrooms-P5-EDO"
   ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
+    cidr_blocks = var.authorized_public_ips
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
   }
   ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
+    cidr_blocks = var.authorized_public_ips
     from_port = 80
     to_port   = 80
     protocol  = "tcp"
@@ -88,7 +84,7 @@ variable "generated_key_name" {
 }
 
 resource "tls_private_key" "my_ssh_key" {
-  algorithm = "ED25519"
+  algorithm = "RSA"
   rsa_bits  = 4096
 }
 
