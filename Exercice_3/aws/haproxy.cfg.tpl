@@ -37,11 +37,32 @@ frontend web_frontend
     bind *:80
     default_backend web_backend
 
+	# Table de suivi des requêtes par IP (jusqu'à 100k IPs, une IP expire après 30s sans activité, et on stocke le taux de requêtes HTTP sur une fenêtre de 10s)
+    stick-table type ip size 100k expire 30s store http_req_rate(10s)
+
+    # Comptabilise les requêtes par IP
+    http-request track-sc0 src
+
+    # Bloque si plus de 50 requêtes en 10 secondes
+    http-request deny deny_status 429 if { sc_http_req_rate(0) gt 50 }
+
+	# Headers de sécurité
+	## Empêche le clickjacking en interdisant l'affichage de la page dans un cadre (frame) ou une iframe
+	http-response set-header X-Frame-Options "SAMEORIGIN"
+	## Empêche les navigateurs de tenter de deviner le type de contenu d'une réponse, ce qui peut aider à prévenir les attaques de type MIME sniffing. 
+	http-response set-header X-Content-Type-Options "nosniff"
+	## Permet de contrôler les informations de référent envoyées avec les requêtes
+	http-response set-header Referrer-Policy "strict-origin-when-cross-origin"
+	## CSP pour limiter les sources de contenu et réduire les risques d'attaques de type Cross-Site Scripting (XSS) et autres attaques de contenu malveillant.
+	http-response set-header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; frame-ancestors 'self'"
+	## Limite les permissions pour les fonctionnalités sensibles comme la géolocalisation, le microphone et la caméra.
+	http-response set-header Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
 backend web_backend
     balance roundrobin
     option httpchk
     http-check send meth GET uri /
     http-check expect status 200
 %{ for i in backend_servers }
-    server ${i.tags.Name} ${i.public_dns}:80 check
+    server ${i.tags.Name} ${i.public_dns}:80 check inter 5s fall 3 rise 2
 %{ endfor }
