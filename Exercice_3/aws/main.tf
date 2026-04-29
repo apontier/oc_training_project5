@@ -53,6 +53,23 @@ resource "aws_instance" "haproxy" {
       "sudo apt-get install -y haproxy",
     ]
   }
+
+  provisioner "file" {
+  content = templatefile("./haproxy.cfg.tpl", {
+    backend_servers = aws_instance.webserver[*]
+  })
+  destination = "/tmp/haproxy.cfg"
+  }
+
+  provisioner "remote-exec" {
+  inline = [
+    "sudo mv /tmp/haproxy.cfg /etc/haproxy/haproxy.cfg",
+    "sudo chown root:root /etc/haproxy/haproxy.cfg",
+    "sudo chmod 644 /etc/haproxy/haproxy.cfg",
+    "sudo systemctl restart haproxy"
+  ]
+  }
+
 }
 
 resource "aws_security_group" "my_security_group" {
@@ -64,7 +81,7 @@ resource "aws_security_group" "my_security_group" {
     protocol  = "tcp"
   }
   ingress {
-    cidr_blocks = var.authorized_public_ips
+    cidr_blocks = ["0.0.0.0/0"]
     from_port = 80
     to_port   = 80
     protocol  = "tcp"
